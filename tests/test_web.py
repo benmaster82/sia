@@ -22,7 +22,7 @@ def runs_root(tmp_path: Path) -> Path:
         "**Task**: /tasks/gpqa\n"
         "**Meta Model**: kimi\n"
         "**Task Model**: haiku\n"
-        "**Backend**: openhands\n"
+        "**Agent impl**: openhands\n"
         "**Started**: 2026-06-05 13:31:32\n"
         "**Max Generations**: 3\n\n"
         "---\n\n## Generation 1\n**Status**: ok\n",
@@ -69,7 +69,7 @@ def test_list_runs_summary(runs_root):
     assert len(runs) == 1
     r = runs[0]
     assert r.name == "run_7"
-    assert r.backend == "openhands"
+    assert r.agent_impl == "openhands"
     assert r.task_model == "haiku"
     assert r.max_generations == 3
     assert r.num_generations == 2
@@ -79,8 +79,10 @@ def test_list_runs_summary(runs_root):
 def test_get_run_detail_and_domains(runs_root):
     detail = rd.get_run(runs_root, "run_7")
     assert detail is not None
+    assert detail.context_md is not None
     assert detail.context_md.startswith("# Run Context")
     gen1 = next(g for g in detail.generations if g.name == "gen_1")
+    assert gen1.eval is not None
     assert gen1.eval.accuracy_percent == 50.0
     assert "target_agent" in gen1.artifacts
     assert "meta_prompt" in gen1.artifacts
@@ -94,11 +96,13 @@ def test_eval_details_and_artifacts(runs_root):
     details = rd.get_eval_details(runs_root, "run_7", "gen_1")
     assert details is not None and len(details) == 4
     assert rd.get_artifact_text(runs_root, "run_7", "gen_1", "target_agent") == "print('hello')\n"
-    assert rd.get_artifact_text(runs_root, "run_7", "gen_2", "improvement").startswith("# Plan")
+    improvement = rd.get_artifact_text(runs_root, "run_7", "gen_2", "improvement")
+    assert improvement is not None and improvement.startswith("# Plan")
 
 
 def test_trajectory_normalization(runs_root):
     turns = rd.get_trajectory(runs_root, "run_7", "gen_1", 1)
+    assert turns is not None
     assert [t["role"] for t in turns] == ["system", "user", "assistant"]
     assert turns[0]["text"] == "You are an expert."
     assert turns[1]["text"] == "Question 1?"
@@ -126,7 +130,7 @@ def test_api_endpoints(runs_root):
     client = TestClient(create_app(runs_root))
 
     assert client.get("/api/runs").json()[0]["name"] == "run_7"
-    assert client.get("/api/runs/run_7").json()["backend"] == "openhands"
+    assert client.get("/api/runs/run_7").json()["agent_impl"] == "openhands"
     assert len(client.get("/api/runs/run_7/gens/gen_1/eval").json()) == 4
     assert "hello" in client.get("/api/runs/run_7/gens/gen_1/artifact/target_agent").text
     assert client.get("/api/runs/run_7/gens/gen_1/trajectory/1").json()[0]["role"] == "system"
