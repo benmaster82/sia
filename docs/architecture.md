@@ -32,7 +32,8 @@ sia/
 ├── sia/
 │   ├── orchestrator.py             # Main orchestration logic
 │   ├── context_manager.py          # Run/context tracking
-│   ├── util.py                     # Agent runner utilities
+│   ├── prompts.py                  # Meta and feedback prompt builders
+│   ├── agent_impls/                # Agent runner backends (claude / openhands / pydantic-ai)
 │   ├── prepare_mlebench_dataset.py # MLE-Bench dataset preparation
 │   └── tasks/                      # Bundled with the wheel
 │       ├── _shared/
@@ -58,7 +59,7 @@ sia/
 
 ## Customizing prompts
 
-The two prompts that drive self-improvement live in [`sia/orchestrator.py`](../sia/orchestrator.py):
+The two prompts that drive self-improvement live in [`sia/prompts.py`](../sia/prompts.py):
 
-- `META_AGENT_PROMPT` — controls how the initial Target Agent is created
-- `FEEDBACK_AGENT_PROMPT` — controls how improvements are suggested
+- `build_meta_prompt(...)` — controls how the initial Target Agent is created
+- `build_feedback_prompt(...)` — controls how improvements are suggested

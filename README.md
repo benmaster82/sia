@@ -101,7 +101,7 @@ Artifacts land in `runs/run_{run_id}/gen_{n}/`:
 - `improvement.md` — diff rationale (gen 2+)
 
 While a run is in progress a **live dashboard** auto-starts at
-`http://127.0.0.1:8000` (requires the `web` extra; disable with `--no-web`).
+`http://127.0.0.1:8000` (disable with `--no-web`).
 
 ### Common flags (`sia run`)
 

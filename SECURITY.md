@@ -35,7 +35,7 @@ When `--sandbox docker` is used:
 
 Requirements: Docker must be installed and the user must have permission to run containers.
 
-### bypassPermissions in util.py
+### bypassPermissions in sia/agent_impls/claude.py
 
 The Claude Code SDK agent runner uses `permission_mode="bypassPermissions"`. This is required for automated agent execution -- without it, the agent would pause and wait for human approval on every file operation. This is safe when:
 - Operating in a controlled workspace

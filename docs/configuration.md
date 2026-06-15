@@ -210,7 +210,7 @@ sia web --runs-dir ./runs --port 8080    # custom directory / port
 
 The same dashboard auto-starts in a background thread during `sia run` so you can
 watch generations land live; pass `--no-web` to disable it, or `--web-port` /
-`--web-host` to change where it binds. If the `web` extra isn't installed, the
+`--web-host` to change where it binds. If FastAPI/uvicorn are missing, the
 run logs a warning and continues without the dashboard.
 
 ## Weights Mode (RL-based tuning)
@@ -278,8 +278,8 @@ sia run --task gpqa --max_gen 5 --run_id 1 --focus weights --training_sandbox sa
 
 ## Environment-variable defaults
 
-`SIA_META_PROFILE` / `SIA_TARGET_PROFILE` set the default profile names (overridden by the CLI
-flags). `SIA_MAX_GENERATIONS`, `SIA_MAX_TURNS`, and `SIA_SANDBOX_MODE` are also honored.
+`SIA_META_AGENT_PROFILE` / `SIA_TARGET_AGENT_PROFILE` set the default profile names (overridden by
+the CLI flags). `SIA_MAX_GENERATIONS`, `SIA_MAX_TURNS`, and `SIA_SANDBOX_MODE` are also honored.
 
 ## Notes
 
